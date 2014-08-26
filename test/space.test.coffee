@@ -36,16 +36,15 @@ describe "SpaceDerp", ->
 
         it 'takes fuel and time and supplies',  ->
             {travel: {location, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
-            assert.equal(location, 'lol asteroids')
+            location.should.be.exactly('lol asteroids')
             # distance = 9, speed = 3, 3 time units travel, eta = 3 * 5 = 15
-            assert.equal(eta, 100 + (3 * 5))
-            #fuel cost = distance * lights_per_ton
-            assert.equal(fuel, 60 - (9 / 4))
+            eta.should.be.exactly(100 + (3 * 5))
+            fuel.should.be.exactly(60 - (9 / 4))
 
         it 'can leave you stranded', ->
             playerData.ship.cargo.fuel = 2
-            {travel: {location:{x, y}, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
-            assert.equal(fuel, 0)
-            assert.equal(x, 8)
-            assert.equal(y, 4)
-            assert.equal(eta, 100 + (8/3) * 5)
+            {travel: {location, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
+            fuel.should.be.exactly(0)
+            location.x.should.be.exactly(8)
+            location.y.should.be.exactly(4)
+            eta.should.be.exactly(100 + (8/3) * 5)
