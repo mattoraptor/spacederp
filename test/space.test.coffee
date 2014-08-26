@@ -25,27 +25,27 @@ setupPlayer = ->
 fakeGetTime = ->
     100
 
-describe "SpaceDerpTests", ->
+describe "SpaceDerp", ->
+    describe "#travel()", ->
+        playerData = null
+        space = null
 
-    playerData = null
-    space = null
+        beforeEach ->
+            playerData = setupPlayer()
+            space = new SpaceDerp setupGalaxy(), 5, fakeGetTime
 
-    beforeEach ->
-        playerData = setupPlayer()
-        space = new SpaceDerp setupGalaxy(), 5, fakeGetTime
+        it 'takes fuel and time and supplies',  ->
+            {travel: {location, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
+            assert.equal(location, 'lol asteroids')
+            # distance = 9, speed = 3, 3 time units travel, eta = 3 * 5 = 15
+            assert.equal(eta, 100 + (3 * 5))
+            #fuel cost = distance * lights_per_ton
+            assert.equal(fuel, 60 - (9 / 4))
 
-    it 'traveling takes fuel and time and supplies',  ->
-        {travel: {location, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
-        assert.equal(location, 'lol asteroids')
-        # distance = 9, speed = 3, 3 time units travel, eta = 3 * 5 = 15
-        assert.equal(eta, 100 + (3 * 5))
-        #fuel cost = distance * lights_per_ton
-        assert.equal(fuel, 60 - (9 / 4))
-
-    it 'traveling can leave you stranded', ->
-        playerData.ship.cargo.fuel = 2
-        {travel: {location:{x, y}, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
-        assert.equal(fuel, 0)
-        assert.equal(x, 8)
-        assert.equal(y, 4)
-        assert.equal(eta, 100 + (8/3) * 5)
+        it 'can leave you stranded', ->
+            playerData.ship.cargo.fuel = 2
+            {travel: {location:{x, y}, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
+            assert.equal(fuel, 0)
+            assert.equal(x, 8)
+            assert.equal(y, 4)
+            assert.equal(eta, 100 + (8/3) * 5)
