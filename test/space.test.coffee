@@ -1,16 +1,21 @@
 SpaceDerp = require '../scripts/spacederp'
 
+setupGalaxy = ->
+    galaxy = {}
+    galaxy['derpbase 1'] = {location: {x: 0, y: 4}}
+    galaxy['lol asteroids'] = {location: {x: 9, y: 4}}
+    galaxy
+
+fakeGetTime = ->
+    100
+
 exports.SpaceTest =
     setUp: (callback) ->
-        galaxy = {}
-        galaxy['derpbase 1'] = {location: {x: 0, y: 4}}
-        galaxy['lol asteroids'] = {location: {x: 9, y: 4}}
-        getTime = ->
-            100
-        @space = new SpaceDerp galaxy, 5, getTime
+
+        @space = new SpaceDerp setupGalaxy(), 5, fakeGetTime
         callback()
 
-    'travelling takes fuel and time and supplies': (test) ->
+    'traveling takes fuel and time and supplies': (test) ->
         playerData = 
             travel: 
                 location: 'derpbase 1'
@@ -30,3 +35,7 @@ exports.SpaceTest =
         test.equals(eta, 100 + (3 * 5))
         test.equals(fuel, 60 - (9 * 4))
         test.done()
+
+    'traveling can leave you stranded': (test) ->
+        test.done()
+
