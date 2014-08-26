@@ -11,9 +11,10 @@ class SpaceDerp
             mag = Math.sqrt(Math.pow(dir.x, 2) + Math.pow(dir.y,2))
             udir = {x: dir.x / mag, y: dir.y / mag}
             playerData.ship.cargo.fuel = 0
-            playerData.travel.location = {}
-            playerData.travel.location.x = curloc.x + udir.x * moved
-            playerData.travel.location.y = curloc.y + udir.y * moved
+            location = 
+                x: curloc.x + udir.x * moved
+                y: curloc.y + udir.y * moved
+            playerData.travel.location = location
             playerData.travel.eta = @getTime() + moved * playerData.ship.speed
         else
             playerData.travel.location = destination
