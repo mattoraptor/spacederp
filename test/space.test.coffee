@@ -40,11 +40,11 @@ exports.SpaceTest =
         test.done()
 
     'traveling can leave you stranded': (test) ->
-        @playerData.ship.cargo.fuel = 1
+        @playerData.ship.cargo.fuel = 2
         {travel: {location:{x, y}, eta}, ship: {cargo: {fuel}}} = @space.travel @playerData, 'lol asteroids'
         test.equals(fuel, 0)
-        test.equals(x, 4)
+        test.equals(x, 8)
         test.equals(y, 4)
-        test.equals(eta, 100 + (4/3) * 5)
+        test.equals(eta, 100 + (8/3) * 5)
         test.done()
 
