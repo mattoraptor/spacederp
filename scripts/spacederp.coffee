@@ -14,6 +14,7 @@ class SpaceDerp
             playerData.travel.location = {}
             playerData.travel.location.x = curloc.x + udir.x * moved
             playerData.travel.location.y = curloc.y + udir.y * moved
+            playerData.travel.eta = @getTime() + moved * playerData.ship.speed
         else
             playerData.travel.location = destination
             playerData.travel.eta = @getTime() + (distance / playerData.ship.speed) * @timeUnit

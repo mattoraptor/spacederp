@@ -45,5 +45,6 @@ exports.SpaceTest =
         test.equals(fuel, 0)
         test.equals(x, 4)
         test.equals(y, 4)
+        test.equals(eta, 100 + (3 * 4))
         test.done()
 
