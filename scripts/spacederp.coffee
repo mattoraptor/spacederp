@@ -1,21 +1,28 @@
+class Vector
+    constructor: (@start, @end) ->
+        @magnitude = Math.sqrt(Math.pow(@end.x - @start.x,  2) + Math.pow(@end.y - @start.y, 2))
+        @unitDirection = {x: (@end.x - @start.x) / @magnitude, y: (@end.y - @start.y) / @magnitude}
+
+    resize: (size) ->
+        new Vector @start, {x: @start.x + @unitDirection.x * size, y: @start.y + @unitDirection.y * size}
+
 class SpaceDerp
     constructor: (@galaxy, @timeUnit, @getTime) ->
 
     travel: (playerData, destination) ->
         target = @galaxy[destination].location
         current = @galaxy[playerData.travel.location].location
-        direction = {x: target.x - current.x, y: target.y - current.y}
-        magnitude = Math.sqrt(Math.pow(direction.x, 2) + Math.pow(direction.y, 2))
+        vec = new Vector current, @galaxy[destination].location
 
-        distanceTraveled = magnitude
+        distanceTraveled = vec.magnitude
         playerData.travel.location = destination
-        
-        if magnitude > playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
-            distanceTraveled = playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
-            traveled = {x: (direction.x / magnitude) * distanceTraveled, y: (direction.y / magnitude) * distanceTraveled}
-            playerData.travel.location = {x: current.x + traveled.x, y: current.y + traveled.y}
 
-        playerData.ship.cargo.fuel = Math.max(0, 
+        maxDistanceOnFuel = playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
+        if distanceTraveled > maxDistanceOnFuel
+            distanceTraveled = maxDistanceOnFuel
+            playerData.travel.location = vec.resize(distanceTraveled).end
+
+        playerData.ship.cargo.fuel = Math.max(0,
             playerData.ship.cargo.fuel - distanceTraveled / playerData.ship.lights_per_ton)
         playerData.travel.eta = @getTime() + (distanceTraveled / playerData.ship.speed) * @timeUnit
         playerData
