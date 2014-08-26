@@ -15,14 +15,16 @@ exports.SpaceTest =
                 crew: 8
                 cargo:
                     max: 100
-                    fuel: 30
+                    fuel: 60
                     supplies: 40
         galaxy = {}
         galaxy['derpbase 1'] = {location: {x: 0, y: 4}}
         galaxy['lol asteroids'] = {location: {x: 9, y: 4}}
         space = new SpaceDerp galaxy, 5, getTime
-        {travel: {location, eta}} = space.travel playerData, 'lol asteroids'
-        test.equals(location, 'lol asteroids')
+        {travel: {location, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
+
         # distance = 9, speed = 3, 3 time units travel, eta = 3 * 5 = 15
+        test.equals(location, 'lol asteroids')
         test.equals(eta, 100 + (3 * 5))
+        test.equals(fuel, 60 - (9 * 4))
         test.done()
