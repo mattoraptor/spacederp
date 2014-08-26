@@ -1,27 +1,23 @@
-getNewLocation = (current, target, distance) ->
-    direction = {x: target.x - current.x, y: target.y - current.y}
-    magnitude = Math.sqrt(Math.pow(direction.x, 2) + Math.pow(direction.y, 2))
-    traveled = {x: (direction.x / magnitude) * distance, y: (direction.y / magnitude) * distance}
-    {x: current.x + traveled.x, y: current.y + traveled.y}
-
 class SpaceDerp
     constructor: (@galaxy, @timeUnit, @getTime) ->
 
     travel: (playerData, destination) ->
-        destloc = @galaxy[destination].location
-        curloc = @galaxy[playerData.travel.location].location
+        target = @galaxy[destination].location
+        current = @galaxy[playerData.travel.location].location
+        direction = {x: target.x - current.x, y: target.y - current.y}
+        magnitude = Math.sqrt(Math.pow(direction.x, 2) + Math.pow(direction.y, 2))
+
+        distanceTraveled = magnitude
+        playerData.travel.location = destination
         
-        distance = Math.min(
-            Math.sqrt(Math.pow(destloc.y - curloc.y,2) + Math.pow(destloc.x - curloc.x,2)),
-            playerData.ship.cargo.fuel * playerData.ship.lights_per_ton)
-        if distance == playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
-            playerData.travel.location = getNewLocation curloc, destloc, distance
-        else
-            playerData.travel.location = destination
+        if magnitude > playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
+            distanceTraveled = playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
+            traveled = {x: (direction.x / magnitude) * distanceTraveled, y: (direction.y / magnitude) * distanceTraveled}
+            playerData.travel.location = {x: current.x + traveled.x, y: current.y + traveled.y}
 
         playerData.ship.cargo.fuel = Math.max(0, 
-            playerData.ship.cargo.fuel - distance / playerData.ship.lights_per_ton)
-        playerData.travel.eta = @getTime() + (distance / playerData.ship.speed) * @timeUnit
+            playerData.ship.cargo.fuel - distanceTraveled / playerData.ship.lights_per_ton)
+        playerData.travel.eta = @getTime() + (distanceTraveled / playerData.ship.speed) * @timeUnit
         playerData
 
 module.exports = SpaceDerp
