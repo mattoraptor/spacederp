@@ -10,16 +10,16 @@ class SpaceDerp
     travel: (playerData, destination) ->
         destloc = @galaxy[destination].location
         curloc = @galaxy[playerData.travel.location].location
-        distance = Math.sqrt(Math.pow(destloc.y - curloc.y,2) + Math.pow(destloc.x - curloc.x,2))
-        if playerData.ship.cargo.fuel * playerData.ship.lights_per_ton < distance
-            moved = playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
-            playerData.ship.cargo.fuel = 0
-            playerData.travel.location = getNewLocation curloc, destloc, moved
-            playerData.travel.eta = @getTime() + (moved / playerData.ship.speed) * @timeUnit
+        distance = Math.min(
+            Math.sqrt(Math.pow(destloc.y - curloc.y,2) + Math.pow(destloc.x - curloc.x,2)),
+            playerData.ship.cargo.fuel * playerData.ship.lights_per_ton)
+        if distance == playerData.ship.cargo.fuel * playerData.ship.lights_per_ton
+            playerData.travel.location = getNewLocation curloc, destloc, distance
         else
             playerData.travel.location = destination
-            playerData.travel.eta = @getTime() + (distance / playerData.ship.speed) * @timeUnit
-            playerData.ship.cargo.fuel -= distance / playerData.ship.lights_per_ton
+        playerData.ship.cargo.fuel = 
+            Math.max(0, playerData.ship.cargo.fuel - distance / playerData.ship.lights_per_ton)
+        playerData.travel.eta = @getTime() + (distance / playerData.ship.speed) * @timeUnit
         playerData
 
 module.exports = SpaceDerp
