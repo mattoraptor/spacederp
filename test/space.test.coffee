@@ -1,3 +1,4 @@
+assert = require "assert"
 SpaceDerp = require '../scripts/spacederp'
 
 setupGalaxy = ->
@@ -7,8 +8,8 @@ setupGalaxy = ->
     galaxy
 
 setupPlayer = ->
-    playerData = 
-        travel: 
+    playerData =
+        travel:
             location: 'derpbase 1'
             eta: null
         ship:
@@ -24,27 +25,27 @@ setupPlayer = ->
 fakeGetTime = ->
     100
 
-exports.SpaceTest =
-    setUp: (callback) ->
-        @playerData = setupPlayer()
-        @space = new SpaceDerp setupGalaxy(), 5, fakeGetTime
-        callback()
+describe "SpaceDerpTests", ->
 
-    'traveling takes fuel and time and supplies': (test) ->
-        {travel: {location, eta}, ship: {cargo: {fuel}}} = @space.travel @playerData, 'lol asteroids'
-        test.equals(location, 'lol asteroids')
+    playerData = null
+    space = null
+
+    beforeEach ->
+        playerData = setupPlayer()
+        space = new SpaceDerp setupGalaxy(), 5, fakeGetTime
+
+    it 'traveling takes fuel and time and supplies',  ->
+        {travel: {location, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
+        assert.equal(location, 'lol asteroids')
         # distance = 9, speed = 3, 3 time units travel, eta = 3 * 5 = 15
-        test.equals(eta, 100 + (3 * 5))
+        assert.equal(eta, 100 + (3 * 5))
         #fuel cost = distance * lights_per_ton
-        test.equals(fuel, 60 - (9 / 4))
-        test.done()
+        assert.equal(fuel, 60 - (9 / 4))
 
-    'traveling can leave you stranded': (test) ->
-        @playerData.ship.cargo.fuel = 2
-        {travel: {location:{x, y}, eta}, ship: {cargo: {fuel}}} = @space.travel @playerData, 'lol asteroids'
-        test.equals(fuel, 0)
-        test.equals(x, 8)
-        test.equals(y, 4)
-        test.equals(eta, 100 + (8/3) * 5)
-        test.done()
-
+    it 'traveling can leave you stranded', ->
+        playerData.ship.cargo.fuel = 2
+        {travel: {location:{x, y}, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
+        assert.equal(fuel, 0)
+        assert.equal(x, 8)
+        assert.equal(y, 4)
+        assert.equal(eta, 100 + (8/3) * 5)
