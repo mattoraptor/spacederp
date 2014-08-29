@@ -31,7 +31,7 @@ describe 'SpaceDerp', ->
     beforeEach ->
         playerData = setupPlayer()
         space = new SpaceDerp setupGalaxy(), 5, fakeGetTime
-    
+
     describe '#travel(data, dest)', ->
         it 'takes fuel and time and supplies', ->
             {travel: {location, eta}, ship: {cargo: {fuel}}} = space.travel playerData, 'lol asteroids'
@@ -49,9 +49,17 @@ describe 'SpaceDerp', ->
             eta.should.be.exactly(100 + (8/3) * 5)
 
     describe '#buy(data, coinBank, item, quantity)', ->
-        it 'buying items costs money and cargo space', ->
+        it 'items costs money and cargo space', ->
             coinBank = { coins: 100 }
             space.buy(playerData, coinBank, "tacos", 3).should.be.true
             {ship: {cargo: {tacos}}} = playerData
             tacos.should.be.exactly(3)
             coinBank.coins.should.be.exactly(100-45)
+
+        it 'can only buy up to quantity at location', ->
+            coinBank = { coins: 100 }
+            playerData.travel.location = 'lol asteroids'
+            space.buy(playerData, coinBank, "tacos", 3)
+            {ship: {cargo: {tacos}}} = playerData
+            tacos.should.be.exactly(2)
+            coinBank.coins.should.be.exactly(100-30*2)

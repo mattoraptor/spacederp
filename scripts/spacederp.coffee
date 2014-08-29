@@ -28,9 +28,11 @@ class SpaceDerp
         playerData
 
     buy: (playerData, coinBank, item, quantity) ->
+        locItem = @galaxy[playerData.travel.location].merchant[item]
+        buyable = Math.min(quantity, locItem.quantity)
         playerData.ship.cargo[item] ?= 0
-        playerData.ship.cargo[item] += quantity
-        coinBank.coins -= @galaxy[playerData.travel.location].merchant[item].price * quantity
+        playerData.ship.cargo[item] += buyable
+        coinBank.coins -= locItem.price * buyable
         true
 
 module.exports = SpaceDerp
