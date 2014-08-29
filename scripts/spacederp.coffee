@@ -27,4 +27,10 @@ class SpaceDerp
         playerData.travel.eta = @getTime() + (distanceTraveled / playerData.ship.speed) * @timeUnit
         playerData
 
+    buy: (playerData, coinBank, item, quantity) ->
+        playerData.ship.cargo[item] ?= 0
+        playerData.ship.cargo[item] += quantity
+        coinBank.coins -= @galaxy[playerData.travel.location].merchant[item].price * quantity
+        true
+
 module.exports = SpaceDerp
