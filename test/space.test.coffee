@@ -51,7 +51,6 @@ describe 'SpaceDerp', ->
     describe '#buy(data, coinBank, item, quantity)', ->
         it 'buying items costs money and cargo space', ->
             coinBank = { coins: 100 }
-            # {ship: {cargo: {tacos}}} = space.buy playerData, coinBank, "tacos", 3
             space.buy(playerData, coinBank, "tacos", 3).should.be.true
             {ship: {cargo: {tacos}}} = playerData
             tacos.should.be.exactly(3)
